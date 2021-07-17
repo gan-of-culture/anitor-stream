@@ -31,7 +31,7 @@ Replace the ```SEARCH_QUERY``` with the name of the show and episode you wanna w
 ./anitor-stream Mahouka Koukou no Yuutousei
 ```
 
-After that you can enter the torrent category. For Eng-Subs choose the first opiton. Now up two 74 available torrents will be listed.
+After that you can enter the torrent category. For Eng-Subs choose the first opiton. Now up too 74 available torrents will be listed.
 Enter the number of the torrent you want to watch and press enter. Now the video should start playing.
 
 ## TODOs
