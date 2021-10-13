@@ -1,0 +1,15 @@
+[package]
+name = "anitor-stream"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.3"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+regex = "1.5.X"
+term = "*"
+serde="*"
+serde_json = "1.0.X"
+serde_derive="*"

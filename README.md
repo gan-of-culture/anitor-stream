@@ -10,14 +10,11 @@ webtorrent-cli
 mpv
 ```
 
-After you have installed them you can clone this repo:
-```console
-git clone https://github.com/gan-of-culture/anitor-stream.git
-```
+Download the latest binary from the [releases page](https://github.com/gan-of-culture/anitor-stream/releases).
 
 Then move into the directory and make the script executable:
 ```bash
-cd anitor-stream && chmod +x anitor-stream
+chmod +x anitor-stream
 ```
 
 ## Usage
@@ -28,15 +25,26 @@ cd anitor-stream && chmod +x anitor-stream
 Replace the ```SEARCH_QUERY``` with the name of the show and episode you wanna watch. For example:
 
 ```bash
-./anitor-stream Mahouka Koukou no Yuutousei
+./anitor-stream "Mahouka Koukou no Yuutousei"
 ```
 
 After that you can enter the torrent category. For Eng-Subs choose the first opiton. Now up too 74 available torrents will be listed.
 Enter the number of the torrent you want to watch and press enter. Now the video should start playing.
 
-## TODOs
+If you don't enter a search query you'll be presented with all shows that aired in the last 24 hours. Again choose the search term by it's number. If you want to choose a different player than mpv you can do so by suppling one of these terms with -p or --player.
 
-I'll probably give the user the options to choose the video player at a later stage via a config file.
+```bash
+airplay
+chromecast
+mplayer
+mpv (default)
+vlc
+xbmc
+```
+
+```bash
+./anitor-stream "My search term" --player "vlc"
+```
 
 ## License
 
