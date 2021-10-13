@@ -140,28 +140,28 @@ fn main() {
                     .text();
         // Get json    
         let result: AnilistResult = serde_json::from_str(&res.unwrap()).unwrap();
-        println!("Shows that aired in the last 24hrs:");
+        print!("\x1B[2J");
+        println!("Shows that aired in the last 24hrs:\n");
         for (i, schedule) in result.data.page.airing_schedules.iter().enumerate() {
             println!("{} {} Ep.{}", i, schedule.media.title.romaji, schedule.episode);
         } 
        
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
+        let input = ask_input();
         //println!("{}", input);
 
         search_query = result.data.page.airing_schedules.get(input.trim().parse::<usize>().unwrap()).unwrap().media.title.romaji.clone();
     }
     let search_query = search_query.trim().replace(" ", "+");
-    println!("{}", search_query);
+    //println!("{}", search_query);
 
-    println!("Please choose a category by entering it's number:");
+    print!("\x1B[2J");
+    println!("Please choose a category by entering it's number:\n");
     for (i, c) in categories.iter().enumerate() {
         println!("{} {}", i, c.name);
     }
 
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-
+    let input = ask_input();
+    print!("\x1B[2J");
     let category = categories.get(input.trim().parse::<usize>().unwrap()).expect("Invaild Input! That's not a category number!");
 
     // set up nyaa.si request
@@ -255,11 +255,8 @@ fn main() {
         panic!("no search results");
     };
 
-    println!("Enter a number:");
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-
-    let input = input.trim().parse::<usize>().unwrap();
+    println!("Enter a number:\n");
+    let input = ask_input().trim().parse::<usize>().unwrap();
     if input < 1 || input > items.len() {
         panic!("Number out of range: 1-{}", input)
     }
@@ -279,6 +276,12 @@ fn remove_xml_tag(s: &str) -> String {
     let mut out = s.split(">").nth(1).unwrap();
     out = out.split("<").next().unwrap();
     String::from(out)
+}
+
+fn ask_input() -> String {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    input
 }
 
 #[cfg(test)]
