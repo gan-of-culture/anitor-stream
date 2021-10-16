@@ -12,7 +12,7 @@ mpv
 
 Download the latest binary from the [releases page](https://github.com/gan-of-culture/anitor-stream/releases).
 
-Then move into the directory and make the script executable:
+Then move into the directory and make the binary executable:
 ```bash
 chmod +x anitor-stream
 ```

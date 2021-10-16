@@ -1,9 +1,8 @@
 use clap::{App, Arg};
 use regex::Regex;
 use reqwest::header::USER_AGENT;
-use term;
 use serde_json::json;
-use std::io::{self};
+use std::io;
 use std::time::SystemTime;
 use std::process::Command;
 
@@ -127,7 +126,7 @@ fn main() {
     let mut search_query = String::from(matches.value_of("INPUT").unwrap_or(""));
     // if nothing supplied display shows of the last 24hrs (supplied by anilist)
     let client = reqwest::blocking::Client::new();
-    if search_query == "" {
+    if search_query.is_empty() {
         let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
         let json = json!({"query": ANILIST_QUERY, "variables": { "airingAt_greater": now-60*60*24, "airingAt_lesser": now }});
 
@@ -176,7 +175,7 @@ fn main() {
             search_query, category.id)
         }
     };
-    println!("{}", query_url);
+    //println!("{}", query_url);
 
     
     let res = client.get(query_url)
@@ -199,7 +198,7 @@ fn main() {
         let mut item = Item::new();
 
         let lines = &caps.get(0).unwrap().as_str();
-        for line in lines.split("\n") {
+        for line in lines.split('\n') {
             let line = line.trim();
             if line.trim() == "" {
                 continue;
@@ -226,14 +225,14 @@ fn main() {
                     item.remake = remove_xml_tag(line);
                 },
                 "</item>" => {
-                    if item.trusted == String::from("Yes") && item.remake == String::from("No") {
+                    if item.trusted == *"Yes" && item.remake == *"No" {
                         terminal.fg(term::color::BRIGHT_GREEN).unwrap();
                     }
-                    if item.trusted == String::from("No") && item.remake == String::from("Yes") {
+                    if item.trusted == *"No" && item.remake == *"Yes" {
                         terminal.fg(term::color::RED).unwrap();
                     }
-                    print!(
-                        "[{}] {} - Size {} - Seeders {} \n",
+                    println!(
+                        "[{}] {} - Size {} - Seeders {}",
                         items.len() + 1,
                         item.title,
                         item.size,
@@ -251,7 +250,7 @@ fn main() {
     }
     terminal.reset().unwrap();
 
-    if items.len() == 0 {
+    if items.is_empty() {
         panic!("no search results");
     };
 
@@ -261,20 +260,20 @@ fn main() {
         panic!("Number out of range: 1-{}", input)
     }
 
-    let torrent_url = &items.get(input).unwrap().link;
-    println!("{}", torrent_url);
+    let torrent = &items.get(input-1).unwrap();
+    println!("{}: {}", torrent.title, torrent.link);
 
     Command::new("webtorrent")
         .arg(format!("--{}", matches.value_of("player").unwrap()))
-        .arg(torrent_url)
+        .arg(torrent.link.clone())
         .output()
         .expect("failed to execute process");
     
 }
 
 fn remove_xml_tag(s: &str) -> String {
-    let mut out = s.split(">").nth(1).unwrap();
-    out = out.split("<").next().unwrap();
+    let mut out = s.split('>').nth(1).unwrap();
+    out = out.split('<').next().unwrap();
     String::from(out)
 }
 
