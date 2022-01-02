@@ -4,10 +4,9 @@ Search and live stream anime/hentai torrent from the cli.
 
 ## Installation
 
-For this script to work you need to have these dependencies installed:
+For this script to work you need to have this dependency installed:
 ```bash
 webtorrent-cli
-mpv
 ```
 
 Download the latest binary from the [releases page](https://github.com/gan-of-culture/anitor-stream/releases).
