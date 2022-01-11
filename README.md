@@ -11,6 +11,8 @@ webtorrent-cli
 
 Download the latest binary from the [releases page](https://github.com/gan-of-culture/anitor-stream/releases).
 
+### Linux
+
 Then move into the directory and make the binary executable:
 ```bash
 chmod +x anitor-stream
@@ -19,12 +21,12 @@ chmod +x anitor-stream
 ## Usage
 
 ```bash
-./anitor-stream [SEARCH_QUERY]
+anitor-stream [SEARCH_QUERY]
 ```
 Replace the ```SEARCH_QUERY``` with the name of the show and episode you wanna watch. For example:
 
 ```bash
-./anitor-stream "Mahouka Koukou no Yuutousei"
+anitor-stream "Mahouka Koukou no Yuutousei"
 ```
 
 After that you can enter the torrent category. For Eng-Subs choose the first opiton. Now up too 74 available torrents will be listed.
@@ -33,7 +35,7 @@ Enter the number of the torrent you want to watch and press enter. Now the video
 If you don't enter a search query you'll be presented with all shows that aired in the last 24 hours.
 
 ```console
-./anitor-stream
+anitor-stream
 
 Shows that aired in the last 24hrs:
 
@@ -62,7 +64,7 @@ xbmc
 ```
 
 ```bash
-./anitor-stream "My search term" --player "vlc"
+anitor-stream "My search term" --player "vlc"
 ```
 
 ## License

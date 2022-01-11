@@ -5,6 +5,7 @@ use serde_json::json;
 use std::io;
 use std::time::SystemTime;
 use std::process::Command;
+use std::env;
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -263,11 +264,24 @@ fn main() {
     let torrent = &items.get(input-1).unwrap();
     println!("{}: {}", torrent.title, torrent.link);
 
-    Command::new("webtorrent")
-        .arg(format!("--{}", matches.value_of("player").unwrap()))
-        .arg(torrent.link.clone())
-        .output()
-        .expect("failed to execute process");
+    match env::consts::OS {
+        "windows" => {
+            // on Windows webtorrent is a powershell script which cannot be run directly as a new process
+            // that's why we call it from a powershell 
+            Command::new("powershell")
+            .arg("-Command")
+            .arg(format!("webtorrent --{} \"{}\"", matches.value_of("player").unwrap(), torrent.link.clone()))
+            .output()
+            .expect("failed to execute process");
+        },
+        &_=>{
+            Command::new("webtorrent")
+                .arg(torrent.link.clone())
+                .arg(format!("--{}", matches.value_of("player").unwrap()))
+                .output()
+                .expect("failed to execute process");
+        }
+    };
     
 }
 
