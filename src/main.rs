@@ -99,6 +99,8 @@ query ($airingAt_greater: Int, $airingAt_lesser: Int) {
 }  
 ";
 
+const CLEAR: &str = "\x1B[2J\x1B[1;1H";
+
 
 fn main() {
     let categories = vec![
@@ -140,7 +142,7 @@ fn main() {
                     .text();
         // Get json    
         let result: AnilistResult = serde_json::from_str(&res.unwrap()).unwrap();
-        print!("\x1B[2J");
+        print!("{}", CLEAR);
         println!("Shows that aired in the last 24hrs:\n");
         for (i, schedule) in result.data.page.airing_schedules.iter().enumerate() {
             println!("{} {} Ep.{}", i, schedule.media.title.romaji, schedule.episode);
@@ -154,14 +156,14 @@ fn main() {
     let search_query = search_query.trim().replace(" ", "+");
     //println!("{}", search_query);
 
-    print!("\x1B[2J");
+    print!("{}", CLEAR);
     println!("Please choose a category by entering it's number:\n");
     for (i, c) in categories.iter().enumerate() {
         println!("{} {}", i, c.name);
     }
 
     let input = ask_input();
-    print!("\x1B[2J");
+    print!("{}", CLEAR);
     let category = categories.get(input.trim().parse::<usize>().unwrap()).expect("Invaild Input! That's not a category number!");
 
     // set up nyaa.si request
@@ -194,7 +196,6 @@ fn main() {
     //println!("{}", body);
 
     let mut items: Vec<Item> = Vec::new();
-    let mut terminal = term::stdout().unwrap();
     for caps in re_item.captures_iter(&body) {
         let mut item = Item::new();
 
@@ -226,20 +227,6 @@ fn main() {
                     item.remake = remove_xml_tag(line);
                 },
                 "</item>" => {
-                    if item.trusted == *"Yes" && item.remake == *"No" {
-                        terminal.fg(term::color::BRIGHT_GREEN).unwrap();
-                    }
-                    if item.trusted == *"No" && item.remake == *"Yes" {
-                        terminal.fg(term::color::RED).unwrap();
-                    }
-                    println!(
-                        "[{}] {} - Size {} - Seeders {}",
-                        items.len() + 1,
-                        item.title,
-                        item.size,
-                        item.seeders
-                    );
-                    terminal.reset().unwrap();
                     items.push(item);
                     break;
                 },                
@@ -249,19 +236,41 @@ fn main() {
             };
         }
     }
-    terminal.reset().unwrap();
 
     if items.is_empty() {
         panic!("no search results");
     };
 
+    items.reverse();
+    let items_len = items.len();
+
+    let mut terminal = term::stdout().unwrap();
+    let mut idx = items_len;
+    for item in &items {    
+        if item.trusted == *"Yes" && item.remake == *"No" {
+            terminal.fg(term::color::BRIGHT_GREEN).unwrap();
+        }
+        if item.trusted == *"No" && item.remake == *"Yes" {
+            terminal.fg(term::color::RED).unwrap();
+        }
+        println!(
+            "[{}] {} - Size {} - Seeders {}",
+            idx,
+            item.title,
+            item.size,
+            item.seeders
+        );
+        terminal.reset().unwrap();
+        idx -= 1;
+    }
+
     println!("Enter a number:\n");
     let input = ask_input().trim().parse::<usize>().unwrap();
-    if input < 1 || input > items.len() {
+    if input < 1 || input > items_len {
         panic!("Number out of range: 1-{}", input)
     }
 
-    let torrent = &items.get(input-1).unwrap();
+    let torrent = &items.get(items_len-input).unwrap();
     println!("{}: {}", torrent.title, torrent.link);
 
     match env::consts::OS {
